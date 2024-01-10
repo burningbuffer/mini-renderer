@@ -8,8 +8,7 @@ public:
 
 	window();
 	void initWindow(const char* iname, int IWIDTH, int IHEIGHT);
-	SDL_Surface* getScreenSurface();
-
+	SDL_Texture* getScreenTexture();
 	void destroyWindow();
 
 	int WIDTH = NULL;
@@ -19,5 +18,5 @@ public:
 
 	SDL_Window* Window = NULL;
 	SDL_Renderer* Renderer = NULL;
-	SDL_Surface* screenSurface = NULL;
+	SDL_Texture* texture = NULL;
 };

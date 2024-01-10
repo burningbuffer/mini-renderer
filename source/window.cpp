@@ -25,13 +25,18 @@ void window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
 		throw std::runtime_error("Failed to create SDL Renderer");
 	}
 	
-	screenSurface = SDL_GetWindowSurface(Window);
+	texture = SDL_CreateTexture(Renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING,WIDTH,HEIGHT);
+
+	if (!texture)
+	{
+		throw std::runtime_error("Failed to create SDL Texture");
+	}
 
 }
 
-SDL_Surface* window::getScreenSurface()
+SDL_Texture* window::getScreenTexture()
 {
-	return SDL_GetWindowSurface(Window);
+	return texture;
 }
 
 
