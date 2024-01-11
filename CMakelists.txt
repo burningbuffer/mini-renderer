@@ -2,4 +2,7 @@ cmake_minimum_required (VERSION 3.2)
 
 project ("mini_renderer")
 
+add_subdirectory ("deps/k-math")
 add_subdirectory ("source")
+
+

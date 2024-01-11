@@ -1,7 +1,5 @@
 #include "renderer.hpp"
 
-
-
 Renderer::Renderer()
 {
 	isRunning = true;
@@ -10,8 +8,7 @@ Renderer::Renderer()
 	height = mWindow.HEIGHT;
 	texture = mWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
-
-	Uint32* pixels = (Uint32*)frameBuffer->pixels;
+	std::cout << vector3;
 }
 
 
@@ -19,7 +16,6 @@ Renderer::~Renderer(){}
 
 void Renderer::Run()
 {
-	// struct buffer ?>??
 	while (isRunning)
 	{
 
@@ -48,15 +44,6 @@ void Renderer::HandleEvents()
 	}
 }
 
-void Renderer::DrawPixel(int x, int y, uint32_t Color)
-{
-	if (x >= 0 && x < width && y >= 0 && y < height)
-	{
-		int index = (width * y) + x;
-		frameBuffer->pixels[index] = Color;
-	}
-}
-
 void Renderer::ClearFrameBuffer(uint32_t Color)
 {
 	for (int y = 0; y < height; y++)
@@ -78,11 +65,11 @@ void Renderer::Render()
 {
 
 
-	DrawPixel(100, 100, 0xFF00FF00);
-	DrawPixel(120, 120, 0xFF00FF00);
-	DrawPixel(130, 130, 0xFF00FF00);
-	DrawPixel(140, 140, 0xFF00FF00);
-	DrawPixel(150, 150, 0xFF00FF00);
+	frameBuffer->DrawPixel(100, 100, 0xFF00FF00);
+	frameBuffer->DrawPixel(120, 120, 0xFF00FF00);
+	frameBuffer->DrawPixel(130, 130, 0xFF00FF00);
+	frameBuffer->DrawPixel(140, 140, 0xFF00FF00);
+	frameBuffer->DrawPixel(150, 150, 0xFF00FF00);
 
 
 	SDL_UpdateTexture(

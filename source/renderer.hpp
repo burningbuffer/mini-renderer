@@ -1,7 +1,8 @@
-#include <iostream>
+//#include <iostream>
 #include "SDL.h"
 #include "window.hpp"
 #include "framebuffer.hpp"
+#include <kma/kma.hpp>
 
 class Renderer
 {
@@ -17,8 +18,9 @@ public:
 	void Update();
 	void Render();
 
-	void DrawPixel(int x, int y, uint32_t Color);
 	void ClearFrameBuffer(uint32_t Color);
+
+	kma::vec3 vector3{1.0f,3.0f,2.0f};
 
 private:
 	window mWindow;
