@@ -65,12 +65,14 @@ void Renderer::Render()
 {
 
 
-	frameBuffer->DrawPixel(100, 100, 0xFF00FF00);
-	frameBuffer->DrawPixel(120, 120, 0xFF00FF00);
-	frameBuffer->DrawPixel(130, 130, 0xFF00FF00);
-	frameBuffer->DrawPixel(140, 140, 0xFF00FF00);
-	frameBuffer->DrawPixel(150, 150, 0xFF00FF00);
+	/*frameBuffer->DrawPixel(100, 100, BLUE);
+	frameBuffer->DrawPixel(120, 120, BLUE);
+	frameBuffer->DrawPixel(130, 130, BLUE);
+	frameBuffer->DrawPixel(140, 140, BLUE);
+	frameBuffer->DrawPixel(150, 150, BLUE);*/
 
+	frameBuffer->DrawLineDDA(100, 100, 500, 500, YELLOW);
+	frameBuffer->DrawLineBresenham(130, 100, 530, 500, BLUE);
 
 	SDL_UpdateTexture(
 		texture,
@@ -86,7 +88,7 @@ void Renderer::Render()
 	//SDL_SetRenderDrawColor(mWindow.Renderer, 255, 0, 0, 255);
 	//SDL_RenderClear(mWindow.Renderer);
 
-	ClearFrameBuffer(0xFFFF0000);
+	ClearFrameBuffer(BLACK);
 
 	SDL_RenderPresent(mWindow.Renderer);
 }

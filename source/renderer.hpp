@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "window.hpp"
 #include "framebuffer.hpp"
+#include "color_types.hpp"
 #include <kma/kma.hpp>
 
 class Renderer
