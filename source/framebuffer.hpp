@@ -13,8 +13,8 @@ struct FrameBuffer
 	void DrawLine(int x0, int y0, int x1, int y1, uint32_t Color);
 	void DrawLineDDA(int x0, int y0, int x1, int y1, uint32_t Color);
 	void DrawLineBresenham(int x0, int y0, int x1, int y1, uint32_t Color);
-
-
+	void DrawRect(int x, int y, int width, int height, uint32_t color);
+	void ClearFrameBuffer(uint32_t Color);
 
 
 

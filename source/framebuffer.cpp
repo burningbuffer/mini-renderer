@@ -77,6 +77,31 @@ void FrameBuffer::DrawLineBresenham(int x0, int y0, int x1, int y1, uint32_t Col
     }
 }
 
+void FrameBuffer::DrawRect(int x, int y, int width, int height, uint32_t color)
+{
+	for (int i = 0; i < width; i++)
+	{
+		for (int j = 0; j < height; j++)
+		{
+			int currX = x + i;
+			int currY = y + j;
+			DrawPixel(currX, currY, color);
+		}
+	}
+}
+
+void FrameBuffer::ClearFrameBuffer(uint32_t Color)
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			int index = (width * y) + x;
+			pixels[index] = Color;
+		}
+	}
+}
+
 
 
 

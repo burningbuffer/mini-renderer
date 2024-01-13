@@ -3,7 +3,10 @@
 #include "window.hpp"
 #include "framebuffer.hpp"
 #include "color_types.hpp"
+#include <vector>
 #include <kma/kma.hpp>
+
+#define N_POINTS (9 * 9 * 9)
 
 class Renderer
 {
@@ -19,9 +22,7 @@ public:
 	void Update();
 	void Render();
 
-	void ClearFrameBuffer(uint32_t Color);
-
-	kma::vec3 vector3{1.0f,3.0f,2.0f};
+	kma::vec2 Project(kma::vec3 Point);
 
 private:
 	window mWindow;
@@ -30,5 +31,13 @@ private:
 
 	float width;
 	float height;
-	
+
+	kma::vec3 camPos{0.0f, 0.0f, -5.0f};
+	kma::vec3 cubeRotation{0.0f, 0.0f, 0.0f};
+
+	float FOVfactor = 500;
+
+	kma::vec3 cubePoints[N_POINTS];
+	kma::vec2 ProjectedPoints[N_POINTS];
+
 };
