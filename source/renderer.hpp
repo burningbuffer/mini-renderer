@@ -3,10 +3,12 @@
 #include "window.hpp"
 #include "framebuffer.hpp"
 #include "color_types.hpp"
+#include "mesh.hpp"
 #include <vector>
 #include <kma/kma.hpp>
 
-#define N_POINTS (9 * 9 * 9)
+#define FPS 60
+#define FRAME_TARGET_TIME (1000/FPS)
 
 class Renderer
 {
@@ -24,20 +26,21 @@ public:
 
 	kma::vec2 Project(kma::vec3 Point);
 
-private:
 	window mWindow;
 	SDL_Texture* texture = nullptr;
 	FrameBuffer* frameBuffer = nullptr;
 
-	float width;
-	float height;
+	float width = NULL;
+	float height = NULL;
+
+	int previousFrameTime = 0;
 
 	kma::vec3 camPos{0.0f, 0.0f, -5.0f};
 	kma::vec3 cubeRotation{0.0f, 0.0f, 0.0f};
 
 	float FOVfactor = 500;
 
-	kma::vec3 cubePoints[N_POINTS];
-	kma::vec2 ProjectedPoints[N_POINTS];
-
+	triangle TrianglesToRender[12];
+	Mesh cube;
+	int NumOfFaces = NULL;
 };

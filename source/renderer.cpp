@@ -5,26 +5,13 @@
 Renderer::Renderer()
 {
 	isRunning = true;
-	mWindow.initWindow("Mini renderer", 800, 600);
+	mWindow.initWindow("Mini renderer", 1200, 800);
 	width = mWindow.WIDTH;
 	height = mWindow.HEIGHT;
 	texture = mWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
 
-
-	int pointCount = 0;
-	for (float x = -1; x <= 1; x += 0.25)
-	{
-		for (float y = -1; y <= 1; y += 0.25)
-		{
-			for (float z = -1; z <= 1; z += 0.25)
-			{
-				kma::vec3 newPoint{x,y,z};
-				cubePoints[pointCount++] = newPoint;
-			}
-		}
-	}
-
+	NumOfFaces = cube.CubeIndices.size();
 }
 
 
@@ -62,32 +49,56 @@ void Renderer::HandleEvents()
 
 void Renderer::Update()
 {
-	cubeRotation.y += 0.001f;
-	cubeRotation.z += 0.011f;
-	cubeRotation.x += 0.000f;
+	int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - previousFrameTime);
 
-	for (int i=0;i<(N_POINTS);i++)
+	if (timeToWait > 0 && timeToWait <= FRAME_TARGET_TIME)
 	{
-		kma::vec3 Point = cubePoints[i];
-
-		kma::vec3 TransformedPoint = kma::RotateOnY(Point, cubeRotation.y);
-		TransformedPoint = kma::RotateOnZ(TransformedPoint, cubeRotation.z);
-		TransformedPoint = kma::RotateOnZ(TransformedPoint, cubeRotation.x);
-
-		TransformedPoint.z -= camPos.z;
-
-		kma::vec2 ProjectedPoint = Project(TransformedPoint);
-
-		ProjectedPoints[i] = ProjectedPoint;
+		SDL_Delay(timeToWait);
 	}
+
+	cubeRotation.y += 0.015f;
+	//cubeRotation.z += 0.011f;
+	//cubeRotation.x += 0.001f;
+
+	for (int i=0;i < NumOfFaces;i++)
+	{
+
+		indices MeshIndices = cube.CubeIndices[i];
+
+		kma::vec3 FaceVertices[3];
+		FaceVertices[0] = cube.CubeVertices[MeshIndices.a - 1];
+		FaceVertices[1] = cube.CubeVertices[MeshIndices.b - 1];
+		FaceVertices[2] = cube.CubeVertices[MeshIndices.c - 1];
+
+		triangle ProjectedTriangle;
+
+		for (int j = 0; j < 3; j++)
+		{
+			kma::vec3 TransformedVertex = FaceVertices[j];
+			TransformedVertex = kma::RotateOnX(TransformedVertex, cubeRotation.x);
+			TransformedVertex = kma::RotateOnY(TransformedVertex, cubeRotation.y);
+			TransformedVertex = kma::RotateOnZ(TransformedVertex, cubeRotation.z);
+		
+			TransformedVertex.z -= camPos.z;
+
+			kma::vec2 ProjectedPoint = Project(TransformedVertex);
+		
+			ProjectedPoint.x += (width / 2);
+			ProjectedPoint.y += (height / 2);
+
+			ProjectedTriangle.Points[j] = ProjectedPoint;
+		}
+
+		TrianglesToRender[i] = ProjectedTriangle;
+	}
+
 }
 
 void Renderer::Render()
 {
 
-
 	/*frameBuffer->DrawPixel(100, 100, BLUE);
-	frameBuffer->DrawPixel(120, 120, BLUE);
+	//frameBuffer->DrawPixel(120, 120, BLUE);
 	frameBuffer->DrawPixel(130, 130, BLUE);
 	frameBuffer->DrawPixel(140, 140, BLUE);
 	frameBuffer->DrawPixel(150, 150, BLUE);*/
@@ -96,15 +107,19 @@ void Renderer::Render()
 	//frameBuffer->DrawLineBresenham(130, 100, 530, 500, BLUE);
 
 
-	for (int i = 0; i < N_POINTS; i++)
+	for (int i = 0; i < NumOfFaces; i++)
 	{
-		kma::vec2 ProjectedReady = ProjectedPoints[i];
-		frameBuffer->DrawRect(
-			ProjectedReady.x + (mWindow.WIDTH / 2), 
-			ProjectedReady.y + (mWindow.HEIGHT / 2),
-			4, 
-			4, 
-			YELLOW);
+		triangle tr = TrianglesToRender[i];
+	
+		frameBuffer->DrawTriangle(
+			tr.Points[0].x,
+			tr.Points[0].y,
+			tr.Points[1].x,
+			tr.Points[1].y,
+			tr.Points[2].x,
+			tr.Points[2].y,
+			PINK
+		);
 	}
 
 	SDL_UpdateTexture(
