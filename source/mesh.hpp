@@ -1,12 +1,19 @@
 #include <kma/kma.hpp>
 #include <vector>
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <fstream>
+#include <cstdlib>
+#include <stdexcept>
+#include <string>
 
 typedef struct
 {
 	int a;
 	int b;
 	int c;
-} indices;
+} face;
 
 typedef struct
 {
@@ -17,47 +24,14 @@ class Mesh
 {
 public:
 
-	//std::vector<kma::vec3> vertices;
-	//std::vector<std::vector<kma::vec3>> indices;
-
-	std::vector<kma::vec3>  CubeVertices =
-	{
-		kma::vec3{-1, -1, -1 },
-		kma::vec3{-1,  1, -1 },
-		kma::vec3{ 1,  1, -1 },
-		kma::vec3{ 1, -1, -1 },
-		kma::vec3{ 1,  1,  1 },
-		kma::vec3{ 1, -1,  1 },
-		kma::vec3{-1,  1,  1 },
-		kma::vec3{-1, -1,  1 }
-	};
-
-	std::vector<indices>  CubeIndices =
-	{
-		 indices{1, 2, 3 },
-		 indices{1, 3, 4 },
-
-		 indices{4, 3, 5 },
-		 indices{4, 5, 6 },
-
-		 indices{6, 5, 7 },
-		 indices{6, 7, 8 },
-
-		 indices{8, 7, 2 },
-		 indices{8, 2, 1 },
-
-		 indices{2, 7, 5 },
-		 indices{2, 5, 3 },
-
-		 indices{6, 8, 1 },
-		 indices{6, 1, 4 }
-	};
+	std::vector<kma::vec3> vertices;
+	std::vector<face> indices;
 
 	kma::vec3 rotation{0.0f, 0.0f, 0.0f};
 
-
-	Mesh();
+	Mesh(const char* filename);
 
 	void LoadOBJ(const char * Path);
+	void PrintMeshContent();
 
 };

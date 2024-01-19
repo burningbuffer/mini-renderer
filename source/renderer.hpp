@@ -38,9 +38,9 @@ public:
 	kma::vec3 camPos{0.0f, 0.0f, -5.0f};
 	kma::vec3 cubeRotation{0.0f, 0.0f, 0.0f};
 
-	float FOVfactor = 500;
+	const float FOVfactor = 800;
 
-	triangle TrianglesToRender[12];
-	Mesh cube;
-	int NumOfFaces = NULL;
+	Mesh* cube; 
+	int NumOfFaces = 0;
+	triangle* TrianglesToRender;
 };

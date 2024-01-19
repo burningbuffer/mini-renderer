@@ -1,7 +1,6 @@
 #include "renderer.hpp"
 
 
-
 Renderer::Renderer()
 {
 	isRunning = true;
@@ -11,9 +10,14 @@ Renderer::Renderer()
 	texture = mWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
 
-	NumOfFaces = cube.CubeIndices.size();
+	cube = new Mesh("assets/head.obj");
+	NumOfFaces = cube->indices.size();
+	TrianglesToRender = new triangle[cube->indices.size()];
+	std::cout << "vertices size: " << cube->vertices.size() << std::endl;
+	std::cout << "indices size: " << cube->indices.size() << std::endl;
+	
+	cube->PrintMeshContent();
 }
-
 
 Renderer::~Renderer(){}
 
@@ -56,19 +60,25 @@ void Renderer::Update()
 		SDL_Delay(timeToWait);
 	}
 
-	cubeRotation.y += 0.015f;
+	cubeRotation.y -= 0.055f;
 	//cubeRotation.z += 0.011f;
-	//cubeRotation.x += 0.001f;
+	//cubeRotation.x += 0.011f;
 
 	for (int i=0;i < NumOfFaces;i++)
 	{
+		face faceToRender = cube->indices[i];
+		/*faceToRender.a = cube->indices.at(i).at(0);
+		faceToRender.b = cube->indices.at(i).at(3);
+		faceToRender.c = cube->indices.at(i).at(6);*/
 
-		indices MeshIndices = cube.CubeIndices[i];
+		/*MeshIndices.a = cube->indices[i][0];
+		MeshIndices.b = cube->indices[i][3];
+		MeshIndices.c = cube->indices[i][6];*/
 
 		kma::vec3 FaceVertices[3];
-		FaceVertices[0] = cube.CubeVertices[MeshIndices.a - 1];
-		FaceVertices[1] = cube.CubeVertices[MeshIndices.b - 1];
-		FaceVertices[2] = cube.CubeVertices[MeshIndices.c - 1];
+		FaceVertices[0] = cube->vertices[faceToRender.a - 1];
+		FaceVertices[1] = cube->vertices[faceToRender.b - 1];
+		FaceVertices[2] = cube->vertices[faceToRender.c - 1];
 
 		triangle ProjectedTriangle;
 
@@ -80,6 +90,8 @@ void Renderer::Update()
 			TransformedVertex = kma::RotateOnZ(TransformedVertex, cubeRotation.z);
 		
 			TransformedVertex.z -= camPos.z;
+			TransformedVertex.y *= -1;
+			//TransformedVertex.y += 1.5;
 
 			kma::vec2 ProjectedPoint = Project(TransformedVertex);
 		
@@ -118,7 +130,7 @@ void Renderer::Render()
 			tr.Points[1].y,
 			tr.Points[2].x,
 			tr.Points[2].y,
-			PINK
+			WHITE
 		);
 	}
 
@@ -148,29 +160,3 @@ kma::vec2 Renderer::Project(kma::vec3 Point)
 	};
 	return ProjectedPoint;
 }
-
-//kma::mat4 rotate(float iAngle, kma::vec4& Axis)
-//{
-//	const float a = kma::radians(iAngle);
-//	const float c = cos(a);
-//	const float s = sin(a);
-//	kma::vec4 axis = Axis.normalize();
-//	kma::mat4 Rotate;
-//	Rotate.matrixData[0] = c + (axis.x * axis.x) * (float(1) - c);
-//	Rotate.matrixData[1] = (axis.x * axis.y) * (float(1) - c) - axis.z * s;
-//	Rotate.matrixData[2] = (axis.x * axis.z) * (float(1) - c) + axis.y * s;
-//	Rotate.matrixData[4] = (axis.y * axis.x) * (float(1) - c) + axis.z * s;
-//	Rotate.matrixData[5] = c + (axis.y * axis.y) * (float(1) - c);
-//	Rotate.matrixData[6] = (axis.y * axis.z) * (float(1) - c) - axis.x * s;
-//	Rotate.matrixData[8] = (axis.z * axis.x) * (float(1) - c) - axis.y * s;
-//	Rotate.matrixData[9] = (axis.z * axis.y) * (float(1) - c) + axis.x * s;
-//	Rotate.matrixData[10] = c + (axis.z * axis.z) * (float(1) - c);
-//	Rotate.matrixData[15] = 1;
-//	return Rotate;
-//}
-//
-//kma::vec3 RotateAxisAngle(kma::vec4 iPos, kma::vec4 iAxis, float iAngle)
-//{
-//	kma::mat4 Rotation = rotate(30, iAxis);
-//	iPos = iPos * Rotation;
-//}

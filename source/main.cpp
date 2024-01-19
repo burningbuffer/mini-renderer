@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 #include <stdexcept>
 
-int main(int argsc, char* argv[])
+int main(int argc, char* argv[])
 {
 	Renderer renderer{};
 

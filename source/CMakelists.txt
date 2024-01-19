@@ -6,3 +6,7 @@ add_executable(${PROJECT_NAME} "main.cpp" "renderer.cpp" "window.cpp" "framebuff
 
 target_link_libraries(${PROJECT_NAME} SDL2::SDL2 SDL2::SDL2main)
 target_link_libraries(${PROJECT_NAME} kmath_library)
+
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/source/assets" COMMENT "Copying directory from ${SOURCE_DIR} to ${DESTINATION_DIR}")
