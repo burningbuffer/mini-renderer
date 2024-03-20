@@ -26,6 +26,8 @@ public:
 
 	kma::vec2 Project(kma::vec3 Point);
 
+	bool IsClockwise(triangle t);
+
 	window mWindow;
 	SDL_Texture* texture = nullptr;
 	FrameBuffer* frameBuffer = nullptr;
@@ -35,10 +37,10 @@ public:
 
 	int previousFrameTime = 0;
 
-	kma::vec3 camPos{0.0f, 0.0f, -5.0f};
+	kma::vec3 camPos{0.0f, 0.0f, 0.0f};
 	kma::vec3 cubeRotation{0.0f, 0.0f, 0.0f};
 
-	const float FOVfactor = 800;
+	const float FOV = 800;
 
 	Mesh* cube; 
 	int NumOfFaces = 0;

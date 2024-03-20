@@ -92,9 +92,9 @@ void FrameBuffer::DrawRect(int x, int y, int width, int height, uint32_t color)
 
 void FrameBuffer::DrawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
 {
-	DrawLine(x0, y0, x1, y1, Color);
-	DrawLine(x1, y1, x2, y2, Color);
-	DrawLine(x2, y2, x0, y0, Color);
+	DrawLineBresenham(x0, y0, x1, y1, Color);
+	DrawLineBresenham(x1, y1, x2, y2, Color);
+	DrawLineBresenham(x2, y2, x0, y0, Color);
 }
 
 void FrameBuffer::ClearFrameBuffer(uint32_t Color)
