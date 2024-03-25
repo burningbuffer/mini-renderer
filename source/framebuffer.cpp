@@ -97,6 +97,79 @@ void FrameBuffer::DrawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, u
 	DrawLineBresenham(x2, y2, x0, y0, Color);
 }
 
+void FrameBuffer::DrawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+{
+	if (y0 > y1)
+	{
+		std::swap(y0, y1);
+		std::swap(x0, x1);
+	}
+
+	if (y1 > y2)
+	{
+		std::swap(y1, y2);
+		std::swap(x1, x2);
+	}
+
+	if (y0 > y1)
+	{
+		std::swap(y0, y1);
+		std::swap(x0, x1);
+	}
+
+	if (y1 == y2)
+	{
+		DrawFlatBottomTriangle(x0, y0, x1, y1, x2, y2, Color);
+	}
+	else if (y0 == y1)
+	{
+		DrawFlatTopTriangle(x0, y0, x1, y1, x2, y2, Color);
+	}
+	else
+	{
+		int My = y1;
+		int Mx = ((float)((x2 - x0) * (y1 - y0)) / (float)(y2 - y0)) + x0;
+
+		DrawFlatBottomTriangle(x0, y0, x1, y1, Mx, My, Color);
+		DrawFlatTopTriangle(x1, y1, Mx, My, x2, y2, Color);
+	}
+
+	
+}
+
+void FrameBuffer::DrawFlatBottomTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+{
+	float leftLine = (float)(x1 - x0) / (y1 - y0);
+	float rightLine = (float)(x2 - x0) / (y2 - y0);
+
+	float xStart = x0;
+	float xEnd = x0;
+
+	for (int y = y0; y <= y2; y++)
+	{
+		DrawLineBresenham(xStart, y, xEnd, y, Color);
+		xStart += leftLine;
+		xEnd += rightLine;
+	}
+
+
+}
+
+void FrameBuffer::DrawFlatTopTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+{
+	float leftLine = (float)(x2 - x0) / (y2 - y0);
+	float rightLine = (float)(x2 - x1) / (y2 - y1);
+
+	float xStart = x2;
+	float xEnd = x2;
+
+	for (int y = y2; y >= y0; y--) {
+		DrawLineBresenham(xStart, y, xEnd, y, Color);
+		xStart -= leftLine;
+		xEnd -= rightLine;
+	}
+}
+
 void FrameBuffer::ClearFrameBuffer(uint32_t Color)
 {
 	for (int y = 0; y < height; y++)

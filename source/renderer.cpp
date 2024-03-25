@@ -33,8 +33,6 @@ void Renderer::Run()
 		Update();
 		Render();
 	}
-
-	
 }
 
 void Renderer::HandleEvents()
@@ -49,7 +47,6 @@ void Renderer::HandleEvents()
 		break;
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
-		
 		break;
 	}
 }
@@ -129,7 +126,7 @@ void Renderer::Render()
 
 		if (!IsClockwise(tr))
 		{
-			frameBuffer->DrawTriangle(
+			frameBuffer->DrawFilledTriangle(
 				tr.Points[0].x,
 				tr.Points[0].y,
 				tr.Points[1].x,
@@ -138,6 +135,16 @@ void Renderer::Render()
 				tr.Points[2].y,
 				WHITE
 			);
+
+			/*frameBuffer->DrawTriangle(
+				tr.Points[0].x,
+				tr.Points[0].y,
+				tr.Points[1].x,
+				tr.Points[1].y,
+				tr.Points[2].x,
+				tr.Points[2].y,
+				BLACK
+			);*/
 		}
 		else {
 			continue;
