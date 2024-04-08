@@ -1,9 +1,9 @@
 #include "window.hpp"
 #include <stdexcept>
 
-window::window(){}
+Window::Window(){}
 
-void window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
+void Window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
 {
 	WIDTH = IWIDTH;
 	HEIGHT = IHEIGHT;
@@ -11,14 +11,14 @@ void window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+	SDLWindow = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
 	
-	if (!Window)
+	if (!SDLWindow)
 	{
 		throw std::runtime_error("Failed to create SDL Window");
 	}
 	
-	Renderer = SDL_CreateRenderer(Window, -1, 0);
+	Renderer = SDL_CreateRenderer(SDLWindow, -1, 0);
 	
 	if (!Renderer)
 	{
@@ -34,15 +34,15 @@ void window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
 
 }
 
-SDL_Texture* window::getScreenTexture()
+SDL_Texture* Window::getScreenTexture()
 {
 	return texture;
 }
 
 
-void window::destroyWindow()
+void Window::destroyWindow()
 {
 	SDL_DestroyRenderer(Renderer);
-	SDL_DestroyWindow(Window);
+	SDL_DestroyWindow(SDLWindow);
 	SDL_Quit();
 }

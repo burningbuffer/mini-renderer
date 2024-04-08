@@ -4,6 +4,7 @@
 #include "framebuffer.hpp"
 #include "color_types.hpp"
 #include "mesh.hpp"
+#include "triangle.hpp"
 #include <vector>
 #include <kma/kma.hpp>
 
@@ -12,7 +13,7 @@
 
 bool isRunning = false;
 
-window mWindow;
+Window SDLWindow;
 SDL_Texture* texture = nullptr;
 FrameBuffer* frameBuffer = nullptr;
 float width = NULL;
@@ -23,9 +24,9 @@ const float FOV = 800;
 kma::vec3 camPos{ 0.0f, 0.0f, 0.0f };
 kma::vec3 cubeRotation{ 0.0f, 0.0f, 0.0f };
 
-Mesh* cube;
+Mesh* cube = nullptr;
 int NumOfFaces = 0;
-triangle* TrianglesToRender;
+Triangle* TrianglesToRender = nullptr;
 
 void HandleEvents();
 void Update();
@@ -36,17 +37,17 @@ kma::vec2 Project(kma::vec3 Point);
 int main(int argc, char* argv[])
 {
 	isRunning = true;
-	mWindow.initWindow("Mini renderer", 1200, 800);
-	width = mWindow.WIDTH;
-	height = mWindow.HEIGHT;
-	texture = mWindow.getScreenTexture();
+	SDLWindow.initWindow("Mini renderer", 1200, 800);
+	width = SDLWindow.WIDTH;
+	height = SDLWindow.HEIGHT;
+	texture = SDLWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
 
-	cube = new Mesh("assets/head.obj");
+	cube = new Mesh("assets/cube.obj");
 
 	NumOfFaces = cube->indices.size();
 
-	TrianglesToRender = new triangle[cube->indices.size()];
+	TrianglesToRender = new Triangle[cube->indices.size()];
 
 	std::cout << "vertices size: " << cube->vertices.size() << std::endl;
 	std::cout << "indices size: " << cube->indices.size() << std::endl;
@@ -103,7 +104,7 @@ void Update()
 		FaceVertices[1] = cube->vertices[faceToRender.b - 1];
 		FaceVertices[2] = cube->vertices[faceToRender.c - 1];
 
-		triangle ProjectedTriangle;
+		Triangle ProjectedTriangle;
 
 		kma::vec3 TransformedTriangle[3];
 
@@ -119,7 +120,6 @@ void Update()
 			TransformedTriangle[j] = TransformedVertex;
 		}
 
-
 		for (int j = 0; j < 3; j++)
 		{
 			kma::vec2 ProjectedPoint = Project(TransformedTriangle[j]);
@@ -131,6 +131,8 @@ void Update()
 		}
 
 		TrianglesToRender[i] = ProjectedTriangle;
+
+		
 
 	}
 
@@ -150,11 +152,11 @@ void Render()
 
 	for (int i = 0; i < NumOfFaces; i++)
 	{
-		triangle tr = TrianglesToRender[i];
+		Triangle tr = TrianglesToRender[i];
 
 		if (!tr.isClockwise())
 		{
-			frameBuffer->DrawFilledTriangle(
+			frameBuffer->DrawTriangle(
 				tr.Points[0].x,
 				tr.Points[0].y,
 				tr.Points[1].x,
@@ -168,7 +170,6 @@ void Render()
 			continue;
 		}
 
-
 	}
 
 	SDL_UpdateTexture(
@@ -177,11 +178,11 @@ void Render()
 		frameBuffer->pixels,
 		(int)width * sizeof(uint32_t));
 
-	SDL_RenderCopy(mWindow.Renderer, texture, NULL, NULL);
+	SDL_RenderCopy(SDLWindow.Renderer, texture, NULL, NULL);
 
 	frameBuffer->ClearFrameBuffer(BLACK);
 
-	SDL_RenderPresent(mWindow.Renderer);
+	SDL_RenderPresent(SDLWindow.Renderer);
 }
 
 void DeleteObjects()
