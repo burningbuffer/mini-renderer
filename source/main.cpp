@@ -21,8 +21,12 @@ float height = NULL;
 int previousFrameTime = 0;
 const float FOV = 800;
 
-kma::vec3 camPos{ 0.0f, 0.0f, 0.0f };
-kma::vec3 cubeRotation{ 0.0f, 0.0f, 0.0f };
+kma::vec3 camPos{ 0.0f, 0.0f, 5.0f };
+
+kma::vec4 cubeRotation{ 0.0f, 0.0f, 0.0f, 0.0f };
+kma::vec4 axisRotation{ 1.0f, 1.0f, 1.0f, 0.0f };
+kma::vec4 cubeScale{ 1.5f, 1.5f, 1.5f, 0.0f };
+kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
@@ -32,7 +36,7 @@ void HandleEvents();
 void Update();
 void Render();
 void DeleteObjects();
-kma::vec2 Project(kma::vec3 Point);
+kma::vec2 Project(kma::vec4 Point);
 
 int main(int argc, char* argv[])
 {
@@ -43,7 +47,7 @@ int main(int argc, char* argv[])
 	texture = SDLWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
 
-	cube = new Mesh("assets/cube.obj");
+	cube = new Mesh("assets/head.obj");
 
 	NumOfFaces = cube->indices.size();
 
@@ -78,6 +82,7 @@ void HandleEvents()
 		break;
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
+		if (event.key.keysym.sym == SDLK_s) camPos.z += 0.15f;
 		break;
 	}
 }
@@ -95,6 +100,15 @@ void Update()
 	//cubeRotation.z += 0.011f;
 	//cubeRotation.x += 0.011f;
 
+	//cubeScale.x += 0.01f;
+	//cubeScale.y += 0.01f;
+	//cubeScale.z += 0.01f;
+	//cubeTranslation.x += 0.01f;
+
+	kma::mat4 scaleMatrix = kma::scale(cubeScale);
+	kma::mat4 rotationMatrix = kma::rotate(cubeRotation.y, axisRotation);
+	kma::mat4 translationMatrix = kma::translate(cubeTranslation);
+
 	for (int i = 0; i < NumOfFaces; i++)
 	{
 		face faceToRender = cube->indices[i];
@@ -106,16 +120,19 @@ void Update()
 
 		Triangle ProjectedTriangle;
 
-		kma::vec3 TransformedTriangle[3];
+		kma::vec4 TransformedTriangle[3];
 
 		for (int j = 0; j < 3; j++)
 		{
-			kma::vec3 TransformedVertex = FaceVertices[j];
-			TransformedVertex = kma::RotateOnX(TransformedVertex, cubeRotation.x);
-			TransformedVertex = kma::RotateOnY(TransformedVertex, cubeRotation.y);
-			TransformedVertex = kma::RotateOnZ(TransformedVertex, cubeRotation.z);
+			kma::vec4 TransformedVertex = kma::vec4(FaceVertices[j].x, FaceVertices[j].y, FaceVertices[j].z, 1);
 
-			TransformedVertex.z += 5;
+			kma::mat4 worldMatrix{};
+
+			kma::mat4 NewworldMatrix = worldMatrix * translationMatrix * rotationMatrix * scaleMatrix;
+
+			TransformedVertex = TransformedVertex * NewworldMatrix;
+
+			TransformedVertex.z += camPos.z;
 
 			TransformedTriangle[j] = TransformedVertex;
 		}
@@ -156,7 +173,7 @@ void Render()
 
 		if (!tr.isClockwise())
 		{
-			frameBuffer->DrawTriangle(
+			frameBuffer->DrawFilledTriangle(
 				tr.Points[0].x,
 				tr.Points[0].y,
 				tr.Points[1].x,
@@ -195,7 +212,7 @@ void DeleteObjects()
 
 }
 
-kma::vec2 Project(kma::vec3 Point)
+kma::vec2 Project(kma::vec4 Point)
 {
 	kma::vec2 ProjectedPoint
 	{
