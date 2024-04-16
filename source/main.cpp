@@ -127,9 +127,9 @@ void Update()
 
 			kma::mat4 worldMatrix{};
 
-			kma::mat4 NewworldMatrix = worldMatrix * translationMatrix * rotationMatrix * scaleMatrix;
+			kma::mat4 NewWorldMatrix = worldMatrix * translationMatrix * rotationMatrix * scaleMatrix;
 
-			TransformedVertex = TransformedVertex * NewworldMatrix;
+			TransformedVertex = TransformedVertex * NewWorldMatrix;
 
 			TransformedVertex.z += camPos.z;
 
@@ -147,8 +147,6 @@ void Update()
 		}
 
 		TrianglesToRender[i] = ProjectedTriangle;
-
-		
 
 	}
 
@@ -204,10 +202,11 @@ void Render()
 void DeleteObjects()
 {
 	std::cout << "Deleting objects...";
-	delete texture;
+	SDLWindow.destroyWindow();
 	delete frameBuffer;
 	delete cube;
 	delete TrianglesToRender;
+	
 
 }
 
