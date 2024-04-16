@@ -23,7 +23,8 @@ const float FOV = 800;
 
 kma::vec3 camPos{ 0.0f, 0.0f, 5.0f };
 
-kma::vec4 cubeRotation{ 0.0f, 0.0f, 0.0f, 0.0f };
+float AngleRotation = 0.005f;
+
 kma::vec4 axisRotation{ 1.0f, 1.0f, 1.0f, 0.0f };
 kma::vec4 cubeScale{ 1.5f, 1.5f, 1.5f, 0.0f };
 kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
@@ -96,9 +97,7 @@ void Update()
 		SDL_Delay(timeToWait);
 	}
 
-	cubeRotation.y -= 0.005f;
-	//cubeRotation.z += 0.011f;
-	//cubeRotation.x += 0.011f;
+	AngleRotation -= 0.005f;
 
 	//cubeScale.x += 0.01f;
 	//cubeScale.y += 0.01f;
@@ -106,7 +105,7 @@ void Update()
 	//cubeTranslation.x += 0.01f;
 
 	kma::mat4 scaleMatrix = kma::scale(cubeScale);
-	kma::mat4 rotationMatrix = kma::rotate(cubeRotation.y, axisRotation);
+	kma::mat4 rotationMatrix = kma::rotate(AngleRotation, axisRotation);
 	kma::mat4 translationMatrix = kma::translate(cubeTranslation);
 
 	for (int i = 0; i < NumOfFaces; i++)
