@@ -11,6 +11,9 @@
 #define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
 
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+
 bool isRunning = false;
 
 Window SDLWindow;
@@ -31,7 +34,8 @@ kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
-Triangle* TrianglesToRender = nullptr;
+
+std::vector<Triangle> TrianglesToRender;
 
 void HandleEvents();
 void Update();
@@ -42,7 +46,7 @@ kma::vec2 Project(kma::vec4 Point);
 int main(int argc, char* argv[])
 {
 	isRunning = true;
-	SDLWindow.initWindow("Mini renderer", 1200, 800);
+	SDLWindow.initWindow("Mini renderer", WINDOW_WIDTH, WINDOW_HEIGHT);
 	width = SDLWindow.WIDTH;
 	height = SDLWindow.HEIGHT;
 	texture = SDLWindow.getScreenTexture();
@@ -52,12 +56,10 @@ int main(int argc, char* argv[])
 
 	NumOfFaces = cube->indices.size();
 
-	TrianglesToRender = new Triangle[cube->indices.size()];
+	TrianglesToRender.resize(cube->indices.size());
 
 	std::cout << "vertices size: " << cube->vertices.size() << std::endl;
 	std::cout << "indices size: " << cube->indices.size() << std::endl;
-
-	//cube->PrintMeshContent();
 
 	while (isRunning)
 	{
@@ -98,11 +100,6 @@ void Update()
 	}
 
 	AngleRotation -= 0.005f;
-
-	//cubeScale.x += 0.01f;
-	//cubeScale.y += 0.01f;
-	//cubeScale.z += 0.01f;
-	//cubeTranslation.x += 0.01f;
 
 	kma::mat4 scaleMatrix = kma::scale(cubeScale);
 	kma::mat4 rotationMatrix = kma::rotate(AngleRotation, axisRotation);
@@ -154,15 +151,6 @@ void Update()
 
 void Render()
 {
-	/*frameBuffer->DrawPixel(100, 100, BLUE);
-	//frameBuffer->DrawPixel(120, 120, BLUE);
-	frameBuffer->DrawPixel(130, 130, BLUE);
-	frameBuffer->DrawPixel(140, 140, BLUE);
-	frameBuffer->DrawPixel(150, 150, BLUE);*/
-
-	//frameBuffer->DrawLineDDA(100, 100, 500, 500, YELLOW);
-	//frameBuffer->DrawLineBresenham(130, 100, 530, 500, BLUE);
-
 
 	for (int i = 0; i < NumOfFaces; i++)
 	{
@@ -179,9 +167,6 @@ void Render()
 				tr.Points[2].y,
 				WHITE
 			);
-		}
-		else {
-			continue;
 		}
 
 	}
@@ -205,9 +190,6 @@ void DeleteObjects()
 	SDLWindow.destroyWindow();
 	delete frameBuffer;
 	delete cube;
-	delete TrianglesToRender;
-	
-
 }
 
 kma::vec2 Project(kma::vec4 Point)
