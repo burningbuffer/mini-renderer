@@ -151,8 +151,6 @@ void FrameBuffer::DrawFlatBottomTriangle(int x0, int y0, int x1, int y1, int x2,
 		xStart += leftLine;
 		xEnd += rightLine;
 	}
-
-
 }
 
 void FrameBuffer::DrawFlatTopTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
