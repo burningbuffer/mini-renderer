@@ -28,9 +28,10 @@ kma::vec3 camPos{ 0.0f, 0.0f, 5.0f };
 
 float AngleRotation = 0.005f;
 
-kma::vec4 axisRotation{ 1.0f, 1.0f, 1.0f, 0.0f };
-kma::vec4 cubeScale{ 1.5f, 1.5f, 1.5f, 0.0f };
+kma::vec4 axisRotation{ 1.0f, 1.0f, 0.0f, 0.0f };
+kma::vec4 cubeScale{ 100.0f, 100.0f, 100.0f, 0.0f };
 kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
+kma::mat4 projectionMatrix{};
 
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
@@ -41,7 +42,34 @@ void HandleEvents();
 void Update();
 void Render();
 void DeleteObjects();
-kma::vec2 Project(kma::vec4 Point);
+kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar);
+kma::vec4 project(kma::vec4 v, kma::mat4 proj);
+
+kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar)
+{
+	kma::mat4 m{};
+	m.matrix[0][0] = aspectRatio * (1 / tan(fov / 2));
+	m.matrix[1][1] = 1 / tan(fov / 2);
+	m.matrix[2][2] = zfar / (zfar - znear);
+	m.matrix[2][3] = 1.0;
+	m.matrix[3][2] = (-zfar * znear) / (zfar - znear);
+	m.matrix[3][3] = 0.0;
+	return m;
+}
+
+kma::vec4 project(kma::vec4 v, kma::mat4 proj)
+{
+	kma::vec4 res = v * proj;
+
+	if (res.w != 0.0)
+	{
+		res.x = res.x / res.w;
+		res.y = res.y / res.w;
+		res.z = res.z / res.w;
+	}
+
+	return res;
+}
 
 int main(int argc, char* argv[])
 {
@@ -51,6 +79,13 @@ int main(int argc, char* argv[])
 	height = SDLWindow.HEIGHT;
 	texture = SDLWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
+
+	float fov = kma::radians(45.0f);
+	float aspectRatio = WINDOW_HEIGHT / WINDOW_WIDTH;
+	float near = 0.1f;
+	float far = 100.0f;
+
+	projectionMatrix = perspective(fov, aspectRatio, near, far);
 
 	cube = new Mesh("assets/head.obj");
 
@@ -135,12 +170,14 @@ void Update()
 
 		for (int j = 0; j < 3; j++)
 		{
-			kma::vec2 ProjectedPoint = Project(TransformedTriangle[j]);
+			kma::vec4 ProjectedPoint = project(TransformedTriangle[j], projectionMatrix);
 
 			ProjectedPoint.x += (width / 2);
 			ProjectedPoint.y += (height / 2);
 
-			ProjectedTriangle.Points[j] = ProjectedPoint;
+			ProjectedTriangle.Points[j].x = ProjectedPoint.x;
+			ProjectedTriangle.Points[j].y = ProjectedPoint.y;
+
 		}
 
 		TrianglesToRender[i] = ProjectedTriangle;
@@ -165,7 +202,7 @@ void Render()
 				tr.Points[1].y,
 				tr.Points[2].x,
 				tr.Points[2].y,
-				WHITE
+				RED
 			);
 		}
 
@@ -190,15 +227,5 @@ void DeleteObjects()
 	SDLWindow.destroyWindow();
 	delete frameBuffer;
 	delete cube;
-}
-
-kma::vec2 Project(kma::vec4 Point)
-{
-	kma::vec2 ProjectedPoint
-	{
-		FOV * (Point.x / Point.z),
-		FOV * (Point.y / Point.z)
-	};
-	return ProjectedPoint;
 }
 
