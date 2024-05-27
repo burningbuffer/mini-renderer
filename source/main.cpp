@@ -6,9 +6,10 @@
 #include "mesh.hpp"
 #include "triangle.hpp"
 #include <vector>
+#include<cstdlib>
 #include <kma/kma.hpp>
 
-#define FPS 60
+#define FPS 30
 #define FRAME_TARGET_TIME (1000/FPS)
 
 #define WINDOW_WIDTH 1200
@@ -24,17 +25,19 @@ float height = NULL;
 int previousFrameTime = 0;
 const float FOV = 800;
 
-kma::vec3 camPos{ 0.0f, 0.0f, 5.0f };
+kma::vec3 camPos{ 0.0f, 0.0f, 0.0f };
 
 float AngleRotation = 0.005f;
 
 kma::vec4 axisRotation{ 1.0f, 1.0f, 0.0f, 0.0f };
-kma::vec4 cubeScale{ 100.0f, 100.0f, 100.0f, 0.0f };
+kma::vec4 cubeScale{ 200.0f, 200.0f, 200.0f, 0.0f };
 kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
 kma::mat4 projectionMatrix{};
 
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
+
+
 
 std::vector<Triangle> TrianglesToRender;
 
@@ -47,13 +50,24 @@ kma::vec4 project(kma::vec4 v, kma::mat4 proj);
 
 kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar)
 {
+	
 	kma::mat4 m{};
+
+	std::cout << " Perspective Matrix Before" << std::endl;
+	std::cout << m ;
+
 	m.matrix[0][0] = aspectRatio * (1 / tan(fov / 2));
 	m.matrix[1][1] = 1 / tan(fov / 2);
 	m.matrix[2][2] = zfar / (zfar - znear);
+
 	m.matrix[2][3] = 1.0;
 	m.matrix[3][2] = (-zfar * znear) / (zfar - znear);
+
 	m.matrix[3][3] = 0.0;
+
+	std::cout << " Perspective Matrix After" << std::endl;
+	std::cout << m;
+
 	return m;
 }
 
@@ -80,18 +94,19 @@ int main(int argc, char* argv[])
 	texture = SDLWindow.getScreenTexture();
 	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
 
-	float fov = kma::radians(45.0f);
-	float aspectRatio = WINDOW_HEIGHT / WINDOW_WIDTH;
+	float fov = kma::radians(90.0f);
+	float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
 	float near = 0.1f;
 	float far = 100.0f;
 
 	projectionMatrix = perspective(fov, aspectRatio, near, far);
 
-	cube = new Mesh("assets/head.obj");
+	cube = new Mesh("assets/cube.obj");
 
 	NumOfFaces = cube->indices.size();
 
 	TrianglesToRender.resize(cube->indices.size());
+
 
 	std::cout << "vertices size: " << cube->vertices.size() << std::endl;
 	std::cout << "indices size: " << cube->indices.size() << std::endl;
@@ -151,6 +166,8 @@ void Update()
 
 		Triangle ProjectedTriangle;
 
+		ProjectedTriangle.TriangleColor = faceToRender.FaceColor;
+
 		kma::vec4 TransformedTriangle[3];
 
 		for (int j = 0; j < 3; j++)
@@ -202,7 +219,7 @@ void Render()
 				tr.Points[1].y,
 				tr.Points[2].x,
 				tr.Points[2].y,
-				RED
+				tr.TriangleColor
 			);
 		}
 

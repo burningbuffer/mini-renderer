@@ -7,12 +7,27 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
+#include "color_types.hpp"
 
 struct face
 {
 	int a;
 	int b;
 	int c;
+
+	unsigned int FaceColor;
+};
+
+static std::vector<unsigned int> ColorRange
+{
+  WHITE
+, BLACK
+, RED
+, GREEN
+, BLUE
+, YELLOW
+, GRAY
+, PINK
 };
 
 class Mesh

@@ -1,8 +1,14 @@
 #include "mesh.hpp"
 #include <array>
 
+//std::vector<unsigned int> ColorRange
+
+
 Mesh::Mesh(const char* filename)
 {
+	srand((unsigned)time(NULL));
+
+
 	LoadOBJ(filename);
 }
 
@@ -40,7 +46,12 @@ void Mesh::LoadOBJ(const char* filename)
 				auto res2 = sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &inputFace[0], &inputFace[1], &inputFace[2], &inputFace[3], &inputFace[4], &inputFace[5], &inputFace[6], &inputFace[7], &inputFace[8]);
 				if (!res2) break;
 
+				int random = 1 + (rand() % 7);
+
 				face face_t;
+
+				face_t.FaceColor = ColorRange[random];
+
 				face_t.a = inputFace[0];
 				face_t.b = inputFace[3];
 				face_t.c = inputFace[6];
