@@ -10,7 +10,18 @@ Creating a renderer with SDL
 - Backface Culling
 - ...
 
+### Todo
+- Depth Sort
+- Fix Perspective
+- Lighting
+- Texture Mapping
+
 ### Install
+
+download dependencies:
+- SDL
+- k-math
+   - Catch2
 
 This project use my [k-math](https://github.com/burningbuffer/k-math) library
 so try cloning with:
@@ -20,11 +31,3 @@ $ git clone --recursive https://github.com/burningbuffer/mini-renderer
 $ cd mini-renderer && mkdir build && cd build
 $ cmake .. && make
 ~~~
-
-### Dependencies
-- SDL
-- k-math
-   - Catch2
-
-
-
