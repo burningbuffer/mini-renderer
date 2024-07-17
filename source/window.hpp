@@ -7,16 +7,17 @@ class Window
 public:
 
 	Window();
-	void initWindow(const char* iname, int IWIDTH, int IHEIGHT);
-	SDL_Texture* getScreenTexture();
-	void destroyWindow();
+	void ConfigWindow(const char* iname, int IWIDTH, int IHEIGHT);
+	SDL_Texture* GetTexture();
+	SDL_Renderer* GetRenderer();
+	void DestroyWindow();
 
-	int WIDTH = NULL;
-	int HEIGHT = NULL;
+	int mWidth = NULL;
+	int mHeight = NULL;
 
-	const char* name = "";
+	const char* mName = "";
 
-	SDL_Window* SDLWindow = NULL;
-	SDL_Renderer* Renderer = NULL;
-	SDL_Texture* texture = NULL;
+	SDL_Window* mWindow = NULL;
+	SDL_Renderer* mRenderer = NULL;
+	SDL_Texture* mTexture = NULL;
 };

@@ -3,46 +3,50 @@
 
 Window::Window(){}
 
-void Window::initWindow(const char* iname, int IWIDTH, int IHEIGHT)
+void Window::ConfigWindow(const char* iname, int IWIDTH, int IHEIGHT)
 {
-	WIDTH = IWIDTH;
-	HEIGHT = IHEIGHT;
-	name = iname;
+	mWidth = IWIDTH;
+	mHeight = IHEIGHT;
+	mName = iname;
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDLWindow = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+	mWindow = SDL_CreateWindow(mName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWidth, mHeight, SDL_WINDOW_SHOWN);
 	
-	if (!SDLWindow)
+	if (!mWindow)
 	{
 		throw std::runtime_error("Failed to create SDL Window");
 	}
 	
-	Renderer = SDL_CreateRenderer(SDLWindow, -1, 0);
+	mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
 	
-	if (!Renderer)
+	if (!mRenderer)
 	{
 		throw std::runtime_error("Failed to create SDL Renderer");
 	}
 	
-	texture = SDL_CreateTexture(Renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING,WIDTH,HEIGHT);
+	mTexture = SDL_CreateTexture(mRenderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING, mWidth, mHeight);
 
-	if (!texture)
+	if (!mTexture)
 	{
 		throw std::runtime_error("Failed to create SDL Texture");
 	}
 
 }
 
-SDL_Texture* Window::getScreenTexture()
+SDL_Renderer* Window::GetRenderer()
 {
-	return texture;
+	return mRenderer;
 }
 
-
-void Window::destroyWindow()
+SDL_Texture* Window::GetTexture()
 {
-	SDL_DestroyRenderer(Renderer);
-	SDL_DestroyWindow(SDLWindow);
+	return mTexture;
+}
+
+void Window::DestroyWindow()
+{
+	SDL_DestroyRenderer(mRenderer);
+	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }

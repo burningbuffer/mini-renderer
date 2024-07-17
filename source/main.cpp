@@ -1,4 +1,3 @@
-//#include <iostream>
 #include "SDL.h"
 #include "window.hpp"
 #include "framebuffer.hpp"
@@ -6,20 +5,20 @@
 #include "mesh.hpp"
 #include "triangle.hpp"
 #include <vector>
+#include <memory>
 #include<cstdlib>
 #include <kma/kma.hpp>
 
 #define FPS 30
 #define FRAME_TARGET_TIME (1000/FPS)
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
+const int WINDOW_WIDTH = 1200;
+const int WINDOW_HEIGHT = 800;
 
 bool isRunning = false;
 
-Window SDLWindow;
-SDL_Texture* texture = nullptr;
-FrameBuffer* frameBuffer = nullptr;
+std::unique_ptr<Window> SDLWindow;
+std::unique_ptr<FrameBuffer> frameBuffer;
 float width = NULL;
 float height = NULL;
 int previousFrameTime = 0;
@@ -37,8 +36,6 @@ kma::mat4 projectionMatrix{};
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
 
-
-
 std::vector<Triangle> TrianglesToRender;
 
 void HandleEvents();
@@ -53,15 +50,12 @@ kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar)
 	
 	kma::mat4 m{};
 
-	std::cout << " Perspective Matrix Before" << std::endl;
-	std::cout << m ;
-
 	m.matrix[0][0] = aspectRatio * (1 / tan(fov / 2));
 	m.matrix[1][1] = 1 / tan(fov / 2);
 	m.matrix[2][2] = zfar / (zfar - znear);
 
-	m.matrix[2][3] = 1.0;
-	m.matrix[3][2] = (-zfar * znear) / (zfar - znear);
+	m.matrix[2][3] = (-zfar * znear) / (zfar - znear);
+	m.matrix[3][2] = 1.0;
 
 	m.matrix[3][3] = 0.0;
 
@@ -88,11 +82,15 @@ kma::vec4 project(kma::vec4 v, kma::mat4 proj)
 int main(int argc, char* argv[])
 {
 	isRunning = true;
-	SDLWindow.initWindow("Mini renderer", WINDOW_WIDTH, WINDOW_HEIGHT);
-	width = SDLWindow.WIDTH;
-	height = SDLWindow.HEIGHT;
-	texture = SDLWindow.getScreenTexture();
-	frameBuffer = new FrameBuffer(new uint32_t[width * height], width, height);
+
+	SDLWindow = std::make_unique<Window>();
+
+	SDLWindow->ConfigWindow("Mini renderer", WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	width = SDLWindow->mWidth;
+	height = SDLWindow->mHeight;
+
+	frameBuffer = std::make_unique<FrameBuffer>(new uint32_t[width * height], width, height);
 
 	float fov = kma::radians(90.0f);
 	float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
@@ -101,12 +99,11 @@ int main(int argc, char* argv[])
 
 	projectionMatrix = perspective(fov, aspectRatio, near, far);
 
-	cube = new Mesh("assets/cube.obj");
+	cube = new Mesh("assets/head.obj");
 
 	NumOfFaces = cube->indices.size();
 
 	TrianglesToRender.resize(cube->indices.size());
-
 
 	std::cout << "vertices size: " << cube->vertices.size() << std::endl;
 	std::cout << "indices size: " << cube->indices.size() << std::endl;
@@ -219,30 +216,29 @@ void Render()
 				tr.Points[1].y,
 				tr.Points[2].x,
 				tr.Points[2].y,
-				tr.TriangleColor
+				WHITE
 			);
 		}
 
 	}
 
 	SDL_UpdateTexture(
-		texture,
+		SDLWindow->GetTexture(),
 		NULL,
 		frameBuffer->pixels,
 		(int)width * sizeof(uint32_t));
 
-	SDL_RenderCopy(SDLWindow.Renderer, texture, NULL, NULL);
+	SDL_RenderCopy(SDLWindow->GetRenderer(), SDLWindow->GetTexture(), NULL, NULL);
 
 	frameBuffer->ClearFrameBuffer(BLACK);
 
-	SDL_RenderPresent(SDLWindow.Renderer);
+	SDL_RenderPresent(SDLWindow->GetRenderer());
 }
 
 void DeleteObjects()
 {
 	std::cout << "Deleting objects...";
-	SDLWindow.destroyWindow();
-	delete frameBuffer;
+	SDLWindow->DestroyWindow();
 	delete cube;
 }
 
