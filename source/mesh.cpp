@@ -24,7 +24,7 @@ void Mesh::LoadOBJ(const char* filename)
 	}
 
 	std::string line;
-	kma::vec3 vertex;
+	glm::vec3 vertex;
 	std::vector<int> inputFace;
 	inputFace.resize(9);
 

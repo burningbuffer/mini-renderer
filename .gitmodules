@@ -1,3 +1,0 @@
-[submodule "deps/k-math"]
-	path = deps/k-math
-	url = https://github.com/cloudsunset/k-math

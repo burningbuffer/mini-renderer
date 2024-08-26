@@ -36,6 +36,7 @@
 *.spv
 
 # visual studio
+.vscode/
 .vscode/settings.json
 .vs/
 

@@ -1,12 +1,32 @@
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(SDL2 REQUIRED)
+file(GLOB HEADERS 
+"*.hpp"
+)
 
-add_executable(${PROJECT_NAME} "main.cpp" "window.cpp" "framebuffer.cpp" "mesh.cpp" "triangle.cpp")
+file(GLOB SOURCES 
+"*.cpp"
+)
 
-target_link_libraries(${PROJECT_NAME} SDL2::SDL2 SDL2::SDL2main)
-target_link_libraries(${PROJECT_NAME} kmath_library)
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
+target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_image SDL2_mixer SDL2_ttf)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/deps/includes ${CMAKE_SOURCE_DIR}/deps/includes/glm/glm)
+target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/deps/libs)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/source/assets" COMMENT "Copying directory from ${SOURCE_DIR} to ${DESTINATION_DIR}")
+
+file(GLOB FILES_TO_COPY "${CMAKE_SOURCE_DIR}/deps/bin/*")
+
+foreach(FILE ${FILES_TO_COPY})
+    get_filename_component(FILENAME ${FILE} NAME)
+
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy "${FILE}" "${CMAKE_BINARY_DIR}/bin/Debug" 
+        COMMENT "Copying ${FILE} from ${SOURCE_DIR} to ${DESTINATION_DIR}"
+    )
+
+    list(APPEND COPY_COMMANDS "${DEST_DIR}/${FILENAME}")
+endforeach()

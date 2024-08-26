@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "window.hpp"
 #include "framebuffer.hpp"
 #include "color_types.hpp"
@@ -6,14 +6,15 @@
 #include "triangle.hpp"
 #include <vector>
 #include <memory>
-#include<cstdlib>
-#include <kma/kma.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
-#define FPS 30
+#define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
 
-const int WINDOW_WIDTH = 1200;
-const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 1920;
+const int WINDOW_HEIGHT = 1080;
 
 bool isRunning = false;
 
@@ -22,58 +23,39 @@ std::unique_ptr<FrameBuffer> frameBuffer;
 float width = NULL;
 float height = NULL;
 int previousFrameTime = 0;
-const float FOV = 800;
 
-kma::vec3 camPos{ 0.0f, 0.0f, 0.0f };
+glm::vec3 camPos{ 0.0f, 0.0f, 0.0f };
 
 float AngleRotation = 0.005f;
 
-kma::vec4 axisRotation{ 1.0f, 1.0f, 0.0f, 0.0f };
-kma::vec4 cubeScale{ 200.0f, 200.0f, 200.0f, 0.0f };
-kma::vec4 cubeTranslation{ 0.0f, 0.0f, 0.0f, 0.0f };
-kma::mat4 projectionMatrix{};
+glm::vec3 axisRotation{ 1.0f, 1.0f, 0.0f};
+glm::vec3 cubeScale{ 1.0f, 1.0f, 1.0f,};
+glm::vec3 cubeTranslation{ 0.0f, 0.0f, 10.0f};
 
 Mesh* cube = nullptr;
 int NumOfFaces = 0;
 
 std::vector<Triangle> TrianglesToRender;
 
+float fov = glm::radians(45.0f);
+float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
+float near = 0.1f;
+float far = 1000.0f;
+
 void HandleEvents();
 void Update();
 void Render();
 void DeleteObjects();
-kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar);
-kma::vec4 project(kma::vec4 v, kma::mat4 proj);
 
-kma::mat4 perspective(float fov, float aspectRatio, float znear, float zfar)
+glm::vec4 project(glm::vec4 v, glm::mat4 proj)
 {
-	
-	kma::mat4 m{};
-
-	m.matrix[0][0] = aspectRatio * (1 / tan(fov / 2));
-	m.matrix[1][1] = 1 / tan(fov / 2);
-	m.matrix[2][2] = zfar / (zfar - znear);
-
-	m.matrix[2][3] = (-zfar * znear) / (zfar - znear);
-	m.matrix[3][2] = 1.0;
-
-	m.matrix[3][3] = 0.0;
-
-	std::cout << " Perspective Matrix After" << std::endl;
-	std::cout << m;
-
-	return m;
-}
-
-kma::vec4 project(kma::vec4 v, kma::mat4 proj)
-{
-	kma::vec4 res = v * proj;
+	glm::vec4 res = proj * v;
 
 	if (res.w != 0.0)
 	{
-		res.x = res.x / res.w;
-		res.y = res.y / res.w;
-		res.z = res.z / res.w;
+		res.x /= res.w;
+        res.y /= res.w;
+        res.z /= res.w;
 	}
 
 	return res;
@@ -91,13 +73,6 @@ int main(int argc, char* argv[])
 	height = SDLWindow->mHeight;
 
 	frameBuffer = std::make_unique<FrameBuffer>(new uint32_t[width * height], width, height);
-
-	float fov = kma::radians(90.0f);
-	float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
-	float near = 0.1f;
-	float far = 100.0f;
-
-	projectionMatrix = perspective(fov, aspectRatio, near, far);
 
 	cube = new Mesh("assets/head.obj");
 
@@ -132,7 +107,8 @@ void HandleEvents()
 		break;
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
-		if (event.key.keysym.sym == SDLK_s) camPos.z += 0.15f;
+		if (event.key.keysym.sym == SDLK_s) camPos.z += 0.001f;
+		if (event.key.keysym.sym == SDLK_w) camPos.z -= 0.001f;
 		break;
 	}
 }
@@ -146,17 +122,24 @@ void Update()
 		SDL_Delay(timeToWait);
 	}
 
+	glm::mat4 projectionMatrix{};
+
+	projectionMatrix = glm::perspective(fov, aspectRatio, near, far);
+
+	glm::mat4 model_matrix = glm::mat4(1.0f);
+
 	AngleRotation -= 0.005f;
 
-	kma::mat4 scaleMatrix = kma::scale(cubeScale);
-	kma::mat4 rotationMatrix = kma::rotate(AngleRotation, axisRotation);
-	kma::mat4 translationMatrix = kma::translate(cubeTranslation);
+	// correct order -> translate -> rotate -> scale
+	model_matrix = glm::translate(model_matrix, cubeTranslation+=camPos);
+	model_matrix = glm::rotate(model_matrix, AngleRotation, axisRotation);
+	model_matrix = glm::scale(model_matrix, cubeScale);
 
 	for (int i = 0; i < NumOfFaces; i++)
 	{
 		face faceToRender = cube->indices[i];
 
-		kma::vec3 FaceVertices[3];
+		glm::vec3 FaceVertices[3];
 		FaceVertices[0] = cube->vertices[faceToRender.a - 1];
 		FaceVertices[1] = cube->vertices[faceToRender.b - 1];
 		FaceVertices[2] = cube->vertices[faceToRender.c - 1];
@@ -165,29 +148,27 @@ void Update()
 
 		ProjectedTriangle.TriangleColor = faceToRender.FaceColor;
 
-		kma::vec4 TransformedTriangle[3];
+		glm::vec4 TransformedTriangle[3];
 
 		for (int j = 0; j < 3; j++)
 		{
-			kma::vec4 TransformedVertex = kma::vec4(FaceVertices[j].x, FaceVertices[j].y, FaceVertices[j].z, 1);
+			glm::vec4 TransformedVertex = glm::vec4(FaceVertices[j], 1);
 
-			kma::mat4 worldMatrix{};
+            glm::mat4 worldMatrix = model_matrix;
 
-			kma::mat4 NewWorldMatrix = worldMatrix * translationMatrix * rotationMatrix * scaleMatrix;
+			TransformedVertex = worldMatrix * TransformedVertex;
 
-			TransformedVertex = TransformedVertex * NewWorldMatrix;
-
-			TransformedVertex.z += camPos.z;
+			TransformedVertex.y = TransformedVertex.y * -1 ;
 
 			TransformedTriangle[j] = TransformedVertex;
 		}
 
 		for (int j = 0; j < 3; j++)
 		{
-			kma::vec4 ProjectedPoint = project(TransformedTriangle[j], projectionMatrix);
+			glm::vec4 ProjectedPoint = project(TransformedTriangle[j], projectionMatrix);
 
-			ProjectedPoint.x += (width / 2);
-			ProjectedPoint.y += (height / 2);
+			ProjectedPoint.x = (ProjectedPoint.x + 1.0f) * (width / 2.0f);
+			ProjectedPoint.y = (ProjectedPoint.y + 1.0f) * (height / 2.0f);
 
 			ProjectedTriangle.Points[j].x = ProjectedPoint.x;
 			ProjectedTriangle.Points[j].y = ProjectedPoint.y;
@@ -241,4 +222,3 @@ void DeleteObjects()
 	SDLWindow->DestroyWindow();
 	delete cube;
 }
-

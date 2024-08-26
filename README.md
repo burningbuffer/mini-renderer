@@ -12,22 +12,18 @@ Creating a renderer with SDL
 
 ### Todo
 - Depth Sort
-- Fix Perspective
 - Lighting
 - Texture Mapping
 
 ### Install
 
-download dependencies:
-- SDL
-- k-math
-   - Catch2
+dependencies used:
+- SDL2
+- glm
 
-This project use my [k-math](https://github.com/burningbuffer/k-math) library
-so try cloning with:
 
 ~~~{.bash}
-$ git clone --recursive https://github.com/burningbuffer/mini-renderer
+$ git clone https://github.com/burningbuffer/mini-renderer
 $ cd mini-renderer && mkdir build && cd build
 $ cmake .. && make
 ~~~

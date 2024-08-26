@@ -1,10 +1,10 @@
 #pragma once
-#include <kma/kma.hpp>
+#include <glm/glm.hpp>
 #include "color_types.hpp"
 
 struct Triangle
 {
-	kma::vec2 Points[3];
+	glm::vec2 Points[3];
 
 	unsigned int TriangleColor;
 

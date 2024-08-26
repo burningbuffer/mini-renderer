@@ -1,4 +1,5 @@
-#include <kma/kma.hpp>
+#pragma once
+#include <glm/glm.hpp>
 #include <vector>
 #include <iostream>
 #include <vector>
@@ -34,10 +35,10 @@ class Mesh
 {
 public:
 
-	std::vector<kma::vec3> vertices;
+	std::vector<glm::vec3> vertices;
 	std::vector<face> indices;
 
-	kma::vec3 rotation{0.0f, 0.0f, 0.0f};
+	glm::vec3 rotation{0.0f, 0.0f, 0.0f};
 
 	Mesh(const char* filename);
 	void LoadOBJ(const char * Path);

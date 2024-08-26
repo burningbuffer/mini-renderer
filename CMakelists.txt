@@ -1,8 +1,11 @@
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required (VERSION 3.8)
 
 project ("mini_renderer")
 
-add_subdirectory ("deps/k-math")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+set(CMAKE_CONFIGURATION_TYPES "Debug")
+
 add_subdirectory ("source")
 
 
