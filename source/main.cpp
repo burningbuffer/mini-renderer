@@ -13,8 +13,8 @@
 #define FPS 60
 #define FRAME_TARGET_TIME (1000/FPS)
 
-const int WINDOW_WIDTH = 1920;
-const int WINDOW_HEIGHT = 1080;
+const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 600;
 
 bool isRunning = false;
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
 	frameBuffer = std::make_unique<FrameBuffer>(new uint32_t[width * height], width, height);
 
-	cube = new Mesh("assets/head.obj");
+	cube = new Mesh("assets/cube.obj");
 
 	NumOfFaces = cube->indices.size();
 
@@ -158,8 +158,6 @@ void Update()
 
 			TransformedVertex = worldMatrix * TransformedVertex;
 
-			TransformedVertex.y = TransformedVertex.y * -1 ;
-
 			TransformedTriangle[j] = TransformedVertex;
 		}
 
@@ -190,7 +188,7 @@ void Render()
 
 		if (!tr.isClockwise())
 		{
-			frameBuffer->DrawFilledTriangle(
+			frameBuffer->DrawTriangle(
 				tr.Points[0].x,
 				tr.Points[0].y,
 				tr.Points[1].x,
