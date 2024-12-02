@@ -1,14 +1,9 @@
 #include "mesh.hpp"
 #include <array>
 
-//std::vector<unsigned int> ColorRange
-
-
 Mesh::Mesh(const char* filename)
 {
 	srand((unsigned)time(NULL));
-
-
 	LoadOBJ(filename);
 }
 

@@ -15,7 +15,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/deps/inclu
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/deps/libs)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/source/assets" COMMENT "Copying directory from ${SOURCE_DIR} to ${DESTINATION_DIR}")
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/bin/assets" COMMENT "Copying directory from ${SOURCE_DIR} to ${DESTINATION_DIR}")
 
 file(GLOB FILES_TO_COPY "${CMAKE_SOURCE_DIR}/deps/bin/*")
 
