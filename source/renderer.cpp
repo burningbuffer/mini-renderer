@@ -63,13 +63,13 @@ Renderer::Renderer(int width, int height)
     previousFrameTime = 0.0f;
 
     meshObject = new Mesh("assets/cube.obj");
-    NumOfFaces = meshObject->indices.size();
-    TrianglesToRender.resize(meshObject->indices.size());
+    NumOfFaces = meshObject->mIndices.size();
+    TrianglesToRender.resize(meshObject->mIndices.size());
 
     lightDir = glm::vec3{ 0, 0, 1 };
 
-    std::cout << "vertices size: " << meshObject->vertices.size() << std::endl;
-    std::cout << "indices size: " << meshObject->indices.size() << std::endl;
+    std::cout << "vertices size: " << meshObject->mVertices.size() << std::endl;
+    std::cout << "indices size: " << meshObject->mIndices.size() << std::endl;
 }
 
 Renderer::~Renderer() 
@@ -124,12 +124,12 @@ void Renderer::Update()
 
     for (uint32 i = 0; i < NumOfFaces; i++) 
     {
-        face faceToRender = meshObject->indices[i];
+        face faceToRender = meshObject->mIndices[i];
 
         glm::vec3 FaceVertices[3];
-        FaceVertices[0] = meshObject->vertices[faceToRender.a - 1];
-        FaceVertices[1] = meshObject->vertices[faceToRender.b - 1];
-        FaceVertices[2] = meshObject->vertices[faceToRender.c - 1];
+        FaceVertices[0] = meshObject->mVertices[faceToRender.a - 1];
+        FaceVertices[1] = meshObject->mVertices[faceToRender.b - 1];
+        FaceVertices[2] = meshObject->mVertices[faceToRender.c - 1];
 
         Triangle ProjectedTriangle;
         ProjectedTriangle.TriangleColor = faceToRender.FaceColor;
