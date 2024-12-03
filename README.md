@@ -12,7 +12,6 @@ Creating a renderer with SDL
 
 ### Todo
 - Depth Sort
-- Lighting
 - Texture Mapping
 
 ### Install
