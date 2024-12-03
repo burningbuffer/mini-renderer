@@ -32,7 +32,6 @@ void Mesh::LoadOBJ(const char* filename)
 				auto res = sscanf(line.c_str(), "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
 				if (!res) break;
 				vertex.y = -vertex.y;
-				//std::cout << "vertex " << std::setprecision(6) << std::fixed <<  vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
 				vertices.push_back(vertex);
 			}
 

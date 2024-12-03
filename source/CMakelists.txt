@@ -8,7 +8,7 @@ file(GLOB SOURCES
 "*.cpp"
 )
 
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} "renderer.cpp" "math.cpp")
 
 target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_image SDL2_mixer SDL2_ttf)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/deps/includes ${CMAKE_SOURCE_DIR}/deps/includes/glm/glm)

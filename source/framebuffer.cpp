@@ -1,11 +1,11 @@
 #include "framebuffer.hpp"
 
-FrameBuffer::FrameBuffer(uint32_t* pixels, float width, float height) : pixels(pixels), width(width), height(height)
+FrameBuffer::FrameBuffer(uint32* pixels, float width, float height) : pixels(pixels), width(width), height(height)
 {
 	numOfPixels = width * height;
 }
 
-void FrameBuffer::DrawPixel(int x, int y, uint32_t Color)
+void FrameBuffer::DrawPixel(int x, int y, uint32 Color)
 {
 	if (x >= 0 && x < width && y >= 0 && y < height)
 	{
@@ -14,7 +14,7 @@ void FrameBuffer::DrawPixel(int x, int y, uint32_t Color)
 	}
 }
 
-void FrameBuffer::DrawLine(int x0, int y0, int x1, int y1, uint32_t Color)
+void FrameBuffer::DrawLine(int x0, int y0, int x1, int y1, uint32 Color)
 {
 	for (float t = 0.; t < 1.; t += .01) {
 		int x = (x1 - x0) * t + x0;
@@ -23,7 +23,7 @@ void FrameBuffer::DrawLine(int x0, int y0, int x1, int y1, uint32_t Color)
 	}
 }
 
-void FrameBuffer::DrawLineDDA(int x0, int y0, int x1, int y1, uint32_t Color)
+void FrameBuffer::DrawLineDDA(int x0, int y0, int x1, int y1, uint32 Color)
 {
 	int DeltaX = (x1 - x0);
 	int DeltaY = (y1 - y0);
@@ -44,7 +44,7 @@ void FrameBuffer::DrawLineDDA(int x0, int y0, int x1, int y1, uint32_t Color)
 	}
 }
 
-void FrameBuffer::DrawLineBresenham(int x0, int y0, int x1, int y1, uint32_t Color)
+void FrameBuffer::DrawLineBresenham(int x0, int y0, int x1, int y1, uint32 Color)
 {
     bool steep = false;
     if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
@@ -77,7 +77,7 @@ void FrameBuffer::DrawLineBresenham(int x0, int y0, int x1, int y1, uint32_t Col
     }
 }
 
-void FrameBuffer::DrawRect(int x, int y, int width, int height, uint32_t color)
+void FrameBuffer::DrawRect(int x, int y, int width, int height, uint32 color)
 {
 	for (int i = 0; i < width; i++)
 	{
@@ -90,14 +90,14 @@ void FrameBuffer::DrawRect(int x, int y, int width, int height, uint32_t color)
 	}
 }
 
-void FrameBuffer::DrawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+void FrameBuffer::DrawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32 Color)
 {
 	DrawLineBresenham(x0, y0, x1, y1, Color);
 	DrawLineBresenham(x1, y1, x2, y2, Color);
 	DrawLineBresenham(x2, y2, x0, y0, Color);
 }
 
-void FrameBuffer::DrawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+void FrameBuffer::DrawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32 Color)
 {
 	if (y0 > y1)
 	{
@@ -137,7 +137,7 @@ void FrameBuffer::DrawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int
 	
 }
 
-void FrameBuffer::DrawFlatBottomTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+void FrameBuffer::DrawFlatBottomTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32 Color)
 {
 	float leftLine = (float)(x1 - x0) / (y1 - y0);
 	float rightLine = (float)(x2 - x0) / (y2 - y0);
@@ -153,7 +153,7 @@ void FrameBuffer::DrawFlatBottomTriangle(int x0, int y0, int x1, int y1, int x2,
 	}
 }
 
-void FrameBuffer::DrawFlatTopTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t Color)
+void FrameBuffer::DrawFlatTopTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32 Color)
 {
 	float leftLine = (float)(x2 - x0) / (y2 - y0);
 	float rightLine = (float)(x2 - x1) / (y2 - y1);
@@ -168,7 +168,7 @@ void FrameBuffer::DrawFlatTopTriangle(int x0, int y0, int x1, int y1, int x2, in
 	}
 }
 
-void FrameBuffer::ClearFrameBuffer(uint32_t Color)
+void FrameBuffer::ClearFrameBuffer(uint32 Color)
 {
 	for (int y = 0; y < height; y++)
 	{

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #define WHITE  0xFFFFFFFF
 #define BLACK  0xFF000000
 #define RED	   0xFFFF0000
@@ -8,3 +10,5 @@
 #define YELLOW 0xFFFFFF00
 #define GRAY   0xFF808080
 #define PINK   0xFFFF00FF
+
+#define uint32 uint32_t
