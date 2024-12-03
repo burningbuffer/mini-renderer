@@ -1,7 +1,7 @@
 # mini-renderer
 Creating a renderer with SDL
 
-<img src="https://github.com/burningbuffer/mini-renderer/raw/master/media/head.gif" width="450">
+<img src="https://github.com/burningbuffer/mini-renderer/raw/master/media/lighting.gif" width="450">
 
 ### Features
 - 3D Projection
