@@ -35,10 +35,8 @@ class Mesh
 {
 public:
 
-	std::vector<glm::vec3> vertices;
-	std::vector<face> indices;
-
-	glm::vec3 rotation{0.0f, 0.0f, 0.0f};
+	std::vector<glm::vec3> mVertices;
+	std::vector<face> mIndices;
 
 	Mesh(const char* filename);
 	void LoadOBJ(const char * Path);

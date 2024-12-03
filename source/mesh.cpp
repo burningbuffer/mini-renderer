@@ -32,7 +32,7 @@ void Mesh::LoadOBJ(const char* filename)
 				auto res = sscanf(line.c_str(), "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
 				if (!res) break;
 				vertex.y = -vertex.y;
-				vertices.push_back(vertex);
+				mVertices.push_back(vertex);
 			}
 
 			if (firstTwoChars == "f ")
@@ -49,7 +49,7 @@ void Mesh::LoadOBJ(const char* filename)
 				face_t.a = inputFace[0];
 				face_t.b = inputFace[3];
 				face_t.c = inputFace[6];
-				indices.push_back(face_t);
+				mIndices.push_back(face_t);
 			}
 
 
@@ -64,7 +64,7 @@ void Mesh::PrintMeshContent()
 {
 
 	std::cout << "=============VERTICES==============" << std::endl;
-	for (auto i : vertices)
+	for (auto i : mVertices)
 	{
 		std::cout << "vertex " << std::setprecision(6) << std::fixed << i.x << " " << i.y << " " << i.z << "\n";
 	}

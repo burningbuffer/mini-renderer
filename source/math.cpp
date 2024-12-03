@@ -1,9 +1,11 @@
 #include "math.hpp"
 
-glm::vec4 Project(glm::vec4 v, glm::mat4 proj) {
+glm::vec4 Project(glm::vec4 v, glm::mat4 proj) 
+{
     glm::vec4 res = proj * v;
 
-    if (res.w != 0.0) {
+    if (res.w != 0.0) 
+    {
         res.x /= res.w;
         res.y /= res.w;
         res.z /= res.w;
@@ -19,7 +21,8 @@ void clamp(float& number, int min, int max)
 }
 
 
-uint32 ApplyLightIntensity(uint32 original_color, float percentage_factor) {
+uint32 ApplyLightIntensity(uint32 original_color, float percentage_factor) 
+{
 
     clamp(percentage_factor, 0.0f, 1.0f);
 
