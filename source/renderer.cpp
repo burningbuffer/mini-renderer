@@ -114,13 +114,13 @@ void Renderer::Update()
     }
 
     glm::mat4 projectionMatrix = glm::perspective(fov, aspectRatio, near, far);
-    glm::mat4 model_matrix = glm::mat4(1.0f);
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
 
     AngleRotation -= 0.005f;
 
-    model_matrix = glm::translate(model_matrix, meshObjectTranslation += camPos);
-    model_matrix = glm::rotate(model_matrix, AngleRotation, axisRotation);
-    model_matrix = glm::scale(model_matrix, meshObjectScale);
+    modelMatrix = glm::translate(modelMatrix, meshObjectTranslation += camPos);
+    modelMatrix = glm::rotate(modelMatrix, AngleRotation, axisRotation);
+    modelMatrix = glm::scale(modelMatrix, meshObjectScale);
 
     for (uint32 i = 0; i < NumOfFaces; i++) 
     {
@@ -139,7 +139,7 @@ void Renderer::Update()
         for (int j = 0; j < 3; j++) 
         {
             glm::vec4 TransformedVertex = glm::vec4(FaceVertices[j], 1);
-            glm::mat4 worldMatrix = model_matrix;
+            glm::mat4 worldMatrix = modelMatrix;
             TransformedVertex = worldMatrix * TransformedVertex;
             TransformedTriangle[j] = TransformedVertex;
         }

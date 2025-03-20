@@ -14,7 +14,7 @@ glm::vec4 Project(glm::vec4 v, glm::mat4 proj)
     return res;
 }
 
-void clamp(float& number, int min, int max)
+void Clamp(float number, int min, int max)
 {
     if (number < min) number = min;
     if (number > max) number = max;
@@ -24,7 +24,7 @@ void clamp(float& number, int min, int max)
 uint32 ApplyLightIntensity(uint32 original_color, float percentage_factor) 
 {
 
-    clamp(percentage_factor, 0.0f, 1.0f);
+    Clamp(percentage_factor, 0.0f, 1.0f);
 
     uint32 a = (original_color & 0xFF000000);
     uint32 r = static_cast<uint32>((original_color & 0x00FF0000) * percentage_factor);
