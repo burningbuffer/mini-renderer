@@ -1,6 +1,9 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
+#include <cmath>
+#include <utility>
+#include <algorithm>
 
 #define WHITE  0xFFFFFFFF
 #define BLACK  0xFF000000
